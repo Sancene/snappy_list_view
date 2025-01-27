@@ -22,6 +22,7 @@ class SnappyListView extends StatefulWidget {
     SnapAlignment? snapOnItemAlignment,
     required this.itemCount,
     required this.itemBuilder,
+    this.separatorBuilder,
     this.scrollBehavior,
     this.physics,
     this.scrollDirection = Axis.vertical,
@@ -53,6 +54,7 @@ class SnappyListView extends StatefulWidget {
   /// Builds item by index Items are only build if they are needed. Make sure that
   /// the item pixel size is equivalent to the size passed to the [itemSizeRetriever].
   final Widget Function(BuildContext, int) itemBuilder;
+  final Widget Function(BuildContext, int)? separatorBuilder;
 
   /// Number of items the itemBuilder can produce.
   final int itemCount;
@@ -212,52 +214,101 @@ class _SnappyListViewState extends State<SnappyListView> {
         });
         return MultiHitStack(
           children: [
-            ScrollablePositionedList.builder(
-              itemScrollController: listController,
-              itemPositionsListener: widget.itemPositionsListener,
-              initialScrollIndex: currentIndex,
-              initialAlignment: getAlignment(
-                index: currentIndex,
-                alignmentOnItem: getAlignment(
+            if (widget.separatorBuilder != null)
+              ScrollablePositionedList.separated(
+                separatorBuilder: widget.separatorBuilder,
+                itemScrollController: listController,
+                itemPositionsListener: widget.itemPositionsListener,
+                initialScrollIndex: currentIndex,
+                initialAlignment: getAlignment(
                   index: currentIndex,
-                  alignmentOnItem: widget.snapOnItemAlignment
-                      .apply(assignSnapAlignmentItem(currentIndex)),
+                  alignmentOnItem: getAlignment(
+                    index: currentIndex,
+                    alignmentOnItem: widget.snapOnItemAlignment
+                        .apply(assignSnapAlignmentItem(currentIndex)),
+                  ),
                 ),
+                itemCount: widget.itemCount,
+                physics: const NeverScrollableScrollPhysics(),
+                addSemanticIndexes: widget.addSemanticIndexes,
+                addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+                addRepaintBoundaries: widget.addRepaintBoundaries,
+                reverse: widget.reverse,
+                minCacheExtent: widget.minCacheExtent,
+                scrollDirection: widget.scrollDirection,
+                padding: getPagePadding(),
+                itemBuilder: (context, index) {
+                  return MeasureSize(
+                    onChange: (size) {
+                      if (initialBuild) {
+                        setState(() => updateItemSizeData(index, size));
+                      } else {
+                        updateItemSizeData(index, size);
+                      }
+                    },
+                    child: widget.allowItemSizes
+                        ? isVerticalScroll
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [buildItem(context, index)],
+                              )
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  buildItem(context, index),
+                                ],
+                              )
+                        : buildItem(context, index),
+                  );
+                },
+              )
+            else
+              ScrollablePositionedList.builder(
+                itemScrollController: listController,
+                itemPositionsListener: widget.itemPositionsListener,
+                initialScrollIndex: currentIndex,
+                initialAlignment: getAlignment(
+                  index: currentIndex,
+                  alignmentOnItem: getAlignment(
+                    index: currentIndex,
+                    alignmentOnItem: widget.snapOnItemAlignment
+                        .apply(assignSnapAlignmentItem(currentIndex)),
+                  ),
+                ),
+                itemCount: widget.itemCount,
+                physics: const NeverScrollableScrollPhysics(),
+                addSemanticIndexes: widget.addSemanticIndexes,
+                addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+                addRepaintBoundaries: widget.addRepaintBoundaries,
+                reverse: widget.reverse,
+                minCacheExtent: widget.minCacheExtent,
+                scrollDirection: widget.scrollDirection,
+                padding: getPagePadding(),
+                itemBuilder: (context, index) {
+                  return MeasureSize(
+                    onChange: (size) {
+                      if (initialBuild) {
+                        setState(() => updateItemSizeData(index, size));
+                      } else {
+                        updateItemSizeData(index, size);
+                      }
+                    },
+                    child: widget.allowItemSizes
+                        ? isVerticalScroll
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [buildItem(context, index)],
+                              )
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  buildItem(context, index),
+                                ],
+                              )
+                        : buildItem(context, index),
+                  );
+                },
               ),
-              itemCount: widget.itemCount,
-              physics: const NeverScrollableScrollPhysics(),
-              addSemanticIndexes: widget.addSemanticIndexes,
-              addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-              addRepaintBoundaries: widget.addRepaintBoundaries,
-              reverse: widget.reverse,
-              minCacheExtent: widget.minCacheExtent,
-              scrollDirection: widget.scrollDirection,
-              padding: getPagePadding(),
-              itemBuilder: (context, index) {
-                return MeasureSize(
-                  onChange: (size) {
-                    if (initialBuild) {
-                      setState(() => updateItemSizeData(index, size));
-                    } else {
-                      updateItemSizeData(index, size);
-                    }
-                  },
-                  child: widget.allowItemSizes
-                      ? isVerticalScroll
-                          ? Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [buildItem(context, index)],
-                            )
-                          : Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                buildItem(context, index),
-                              ],
-                            )
-                      : buildItem(context, index),
-                );
-              },
-            ),
             PageView.builder(
               scrollBehavior: widget.scrollBehavior,
               controller: widget.controller,
