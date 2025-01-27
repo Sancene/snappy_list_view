@@ -15,7 +15,6 @@ class SnappyListView extends StatefulWidget {
   /// only for those children that are actually visible.
   /// See more [PageView.builder]
   SnappyListView({
-    Key? key,
     PageController? controller,
     ListVisualisation? visualisation,
     ItemPositionsListener? itemPositionsListener,
@@ -37,13 +36,13 @@ class SnappyListView extends StatefulWidget {
     this.overscrollPhysics,
     this.allowItemSizes = false,
     this.onPageChange,
+    super.key,
   })  : controller = controller ?? PageController(),
         visualisation = visualisation ?? ListVisualisation.normal(),
         itemPositionsListener =
             itemPositionsListener ?? ItemPositionsListener.create(),
         snapAlignment = snapAlignment ?? SnapAlignment.static(0.5),
-        snapOnItemAlignment = snapOnItemAlignment ?? SnapAlignment.static(0.5),
-        super(key: key);
+        snapOnItemAlignment = snapOnItemAlignment ?? SnapAlignment.static(0.5);
 
   /// A normal controller for PageView or [DynamicPageView].
   /// A page controller lets you manipulate which page is visible in

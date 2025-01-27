@@ -10,9 +10,9 @@ class PageOverscrollPhysics extends ScrollPhysics {
   final double velocityPerOverscroll;
 
   const PageOverscrollPhysics({
-    ScrollPhysics? parent,
     this.velocityPerOverscroll = 1000,
-  }) : super(parent: parent);
+    super.parent,
+  });
 
   @override
   PageOverscrollPhysics applyTo(ScrollPhysics? ancestor) {

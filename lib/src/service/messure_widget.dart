@@ -27,10 +27,10 @@ class MeasureSize extends SingleChildRenderObjectWidget {
   final OnWidgetSizeChange onChange;
 
   const MeasureSize({
-    Key? key,
     required this.onChange,
-    required Widget child,
-  }) : super(key: key, child: child);
+    required Widget super.child,
+    super.key,
+  });
 
   @override
   RenderObject createRenderObject(BuildContext context) {

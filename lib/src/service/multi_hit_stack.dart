@@ -5,13 +5,13 @@ import 'package:flutter/rendering.dart';
 ///A normal stack widget would only allow the first widget to receive any hits.
 ///This widget was created by https://stackoverflow.com/a/73494415/11003497
 class MultiHitStack extends Stack {
-  MultiHitStack({
-    super.key,
+  const MultiHitStack({
     super.alignment = AlignmentDirectional.topStart,
     super.textDirection,
     super.fit = StackFit.loose,
     super.clipBehavior = Clip.hardEdge,
     super.children = const <Widget>[],
+    super.key,
   });
 
   @override

@@ -4,13 +4,13 @@ version: 0.0.9
 homepage: https://github.com/polarby/snappy_list_view
 
 environment:
-  sdk: '>=2.18.2 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.5.1 <4.0.0'
+  flutter: '>=3.24.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  matrix4_transform: ^2.0.1
+  matrix4_transform: ^4.0.1
   scrollable_positioned_list: ^0.3.8
   vector_math: ^2.1.4
 
@@ -18,7 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
